@@ -1,0 +1,60 @@
+package main
+
+import "core:fmt"
+import "core:os"
+import "core:strconv"
+
+import "guess"
+import "trial"
+
+import "advent/four"
+import "advent/one"
+import "advent/three"
+import "advent/two"
+
+main :: proc() {
+	input_buf: [100]byte
+
+	if len(os.args) < 2 {
+		s := read_input(input_buf[:])
+		run_program(s)
+	} else {
+		run_program(os.args[1])
+	}
+}
+
+read_input :: proc(buf: []byte) -> string {
+	fmt.print("What program do you want?: ")
+	bytes_read, _ := os.read(os.stdin, buf[:])
+	return string(buf[:bytes_read - 2])
+}
+
+run_program :: proc(name: string) {
+	switch name {
+	case "one":
+		one.run()
+	case "two":
+		two.run()
+	case "three":
+		three.run()
+	case "four":
+		four.run()
+	case "trial":
+		trial.run()
+	case "guess":
+		if len(os.args) >= 3 {
+			max, ok := strconv.parse_int(os.args[2])
+			if ok {
+				guess.run(max)
+			} else {
+				guess.run()
+			}
+		} else {
+			guess.run()
+		}
+	case "汉字":
+		fmt.println("你好！")
+	case:
+		fmt.println("There is no program called: ", name)
+	}
+}
