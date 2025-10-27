@@ -7,8 +7,11 @@ import "core:strconv"
 import "guess"
 import "trial"
 
+import "advent/five"
 import "advent/four"
 import "advent/one"
+import "advent/seven"
+import "advent/six"
 import "advent/three"
 import "advent/two"
 
@@ -39,6 +42,12 @@ run_program :: proc(name: string) {
 		three.run()
 	case "four":
 		four.run()
+	case "five":
+		five.run()
+	case "six":
+		six.run()
+	case "seven":
+		seven.run()
 	case "trial":
 		trial.run()
 	case "guess":
