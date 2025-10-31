@@ -16,7 +16,9 @@ import "advent/one"
 import "advent/seven"
 import "advent/six"
 import "advent/ten"
+import "advent/thirteen"
 import "advent/three"
+import "advent/twelve"
 import "advent/two"
 
 main :: proc() {
@@ -60,6 +62,10 @@ run_program :: proc(name: string) {
 		ten.run()
 	case "eleven":
 		eleven.run()
+	case "twelve":
+		twelve.run()
+	case "thirteen":
+		thirteen.run()
 	case "trial":
 		trial.run()
 	case "guess":
