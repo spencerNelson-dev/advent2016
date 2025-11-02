@@ -24,7 +24,7 @@ Key :: struct {
 }
 
 bytes_to_hex_string :: proc(bytes: []byte) -> string {
-	builder := strings.builder_make(len(bytes) * 2)
+	builder := strings.builder_make()
 	for byte_val in bytes {
 		fmt.sbprintf(&builder, "%02x", byte_val)
 	}
@@ -32,8 +32,7 @@ bytes_to_hex_string :: proc(bytes: []byte) -> string {
 }
 
 is_key_contender :: proc(s: string) -> (bool, u8) {
-	s := s[31:]
-	for j := 0; j < len(s) - 3; j += 1 {
+	for j := 0; j < len(s) - 2; j += 1 {
 		if s[j] == s[j + 1] && s[j] == s[j + 2] {
 			return true, s[j]
 		}
@@ -42,8 +41,7 @@ is_key_contender :: proc(s: string) -> (bool, u8) {
 }
 
 is_key_validator :: proc(s: string) -> (bool, u8) {
-	s := s[31:]
-	for j := 0; j < len(s) - 5; j += 1 {
+	for j := 0; j < len(s) - 4; j += 1 {
 		if s[j] == s[j + 1] && s[j] == s[j + 2] && s[j] == s[j + 3] && s[j] == s[j + 4] {
 			return true, s[j]
 		}
@@ -79,6 +77,15 @@ get_key_at_index :: proc(con: ^[dynamic]Key, n: int) -> Key {
 	return Key{}
 }
 
+key_exists :: proc(list: ^[dynamic]int, t: int)-> bool {
+	for l in list {
+		if l == t {
+			return true
+		}
+	}
+	return false
+}
+
 run :: proc() {
 	buf: [64]byte
 
@@ -86,16 +93,29 @@ run :: proc() {
 	valid_indexes: [dynamic]int
 	i: int
 	v: int
-	main: for count_valid(&contenders) < 66 {
+	main: for v < 65 {
 		{
 			num := strconv.itoa(buf[:], i)
 			salt := strings.concatenate({INPUT, num})
 			bytes := hash.hash(hash.Algorithm.Insecure_MD5, salt)
+			s: string
+			s = bytes_to_hex_string(bytes)
+			// fmt.println(s)
+			for x in 0..<2016{
+			s = bytes_to_hex_string(bytes)
+				bytes = hash.hash(hash.Algorithm.Insecure_MD5, s)
+					
+			}
+			
 			defer delete(bytes)
-
-			s := bytes_to_hex_string(bytes)
+			// fmt.println("done with one", i)
+			s = bytes_to_hex_string(bytes)
+			// buf: [64]byte
+			// fmt.println(s)
+			// bytes_read, _ := os.read(os.stdin, buf[:])
 
 			if test, r := is_key_contender(s); test {
+				// fmt.println(i, "is a contender")
 				key := Key {
 					index = i,
 					hash  = s,
@@ -104,7 +124,7 @@ run :: proc() {
 				append(&contenders, key)
 			}
 			if test, r := is_key_validator(s); test {
-				fmt.println(i, s)
+				// fmt.println(i, s)
 				for &c in contenders {
 
 					if c.r == r && i < c.index + 1000 && c.index != i {
@@ -114,20 +134,25 @@ run :: proc() {
 						// bytes_read, _ := os.read(os.stdin, buf[:])
 
 						c.valid = .Yes
+						if !key_exists(&valid_indexes, c.index){
 						append(&valid_indexes, c.index)
 						v += 1
-						if v == 66 {
-							break main
+							if v > 63 {
+								break main
+							}
+							
 						}
 					}
 				}
 			}
+			fmt.print(i, len(valid_indexes), "\r")
 			i += 1
 		}
 	}
+	fmt.print("\n")
 	slice.sort(valid_indexes[:])
-	fmt.println(len(valid_indexes))
-	fmt.println(valid_indexes)
+	// fmt.println(len(valid_indexes))
+	// fmt.println(valid_indexes)
 	fmt.println(valid_indexes[63])
 }
 
