@@ -49,33 +49,6 @@ is_key_validator :: proc(s: string) -> (bool, u8) {
 	return false, 0
 }
 
-count_valid :: proc(con: ^[dynamic]Key) -> int {
-	count: int
-	for c in con {
-		if c.valid == .Yes {
-			count += 1
-		}
-	}
-	return count
-}
-
-get_nth_valid :: proc(con: ^[dynamic]Key, n: int) -> Key {
-	for c in con {
-		if c.v_num == n {
-			return c
-		}
-	}
-	return Key{}
-}
-
-get_key_at_index :: proc(con: ^[dynamic]Key, n: int) -> Key {
-	for c in con {
-		if c.index == n {
-			return c
-		}
-	}
-	return Key{}
-}
 
 key_exists :: proc(list: ^[dynamic]int, t: int)-> bool {
 	for l in list {
@@ -98,17 +71,14 @@ run :: proc() {
 			num := strconv.itoa(buf[:], i)
 			salt := strings.concatenate({INPUT, num})
 			bytes := hash.hash(hash.Algorithm.Insecure_MD5, salt)
+			defer delete(bytes)
 			s: string
-			s = bytes_to_hex_string(bytes)
-			// fmt.println(s)
-			for x in 0..<2016{
-			s = bytes_to_hex_string(bytes)
+			for x in 0..< 2016{
+				s = bytes_to_hex_string(bytes)
 				bytes = hash.hash(hash.Algorithm.Insecure_MD5, s)
 					
 			}
 			
-			defer delete(bytes)
-			// fmt.println("done with one", i)
 			s = bytes_to_hex_string(bytes)
 			// buf: [64]byte
 			// fmt.println(s)
@@ -128,10 +98,10 @@ run :: proc() {
 				for &c in contenders {
 
 					if c.r == r && i < c.index + 1000 && c.index != i {
-						// buf: [64]byte
-						// fmt.println(i, s, r)
-						// fmt.println(v, c.index, c.hash, c.r, salt)
-						// bytes_read, _ := os.read(os.stdin, buf[:])
+						buf: [64]byte
+						fmt.println(i, s, r)
+						fmt.println(v, c.index, c.hash, c.r, salt)
+						bytes_read, _ := os.read(os.stdin, buf[:])
 
 						c.valid = .Yes
 						if !key_exists(&valid_indexes, c.index){
@@ -154,6 +124,8 @@ run :: proc() {
 	// fmt.println(len(valid_indexes))
 	// fmt.println(valid_indexes)
 	fmt.println(valid_indexes[63])
+	fmt.println("example abc expect: 22551")
 }
 
 // 14651, 14833 -- too low
+// part 2 - 20219, too high
