@@ -9,13 +9,16 @@ import "trial"
 
 import "advent/eight"
 import "advent/eleven"
+import "advent/fifteen"
 import "advent/five"
 import "advent/four"
 import "advent/fourteen"
 import "advent/nine"
 import "advent/one"
 import "advent/seven"
+import "advent/seventeen"
 import "advent/six"
+import "advent/sixteen"
 import "advent/ten"
 import "advent/thirteen"
 import "advent/three"
@@ -71,6 +74,12 @@ run_program :: proc(name: string) {
 		fourteen.read_keys()
 	case "fourteen-build":
 	// fourteen.build_keys()
+	case "fifteen":
+		fifteen.run()
+	case "sixteen":
+		sixteen.run()
+	case "seventeen":
+		seventeen.run()
 	case "trial":
 		trial.run()
 	case "guess":
@@ -90,4 +99,3 @@ run_program :: proc(name: string) {
 		fmt.println("There is no program called: ", name)
 	}
 }
-
