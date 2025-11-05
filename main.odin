@@ -68,7 +68,9 @@ run_program :: proc(name: string) {
 	case "thirteen":
 		thirteen.run()
 	case "fourteen":
-		fourteen.run()
+		fourteen.read_keys()
+	case "fourteen-build":
+	// fourteen.build_keys()
 	case "trial":
 		trial.run()
 	case "guess":
@@ -88,3 +90,4 @@ run_program :: proc(name: string) {
 		fmt.println("There is no program called: ", name)
 	}
 }
+
